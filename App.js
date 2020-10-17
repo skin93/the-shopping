@@ -5,10 +5,12 @@ import { AppLoading } from 'expo'
 import * as Font from 'expo-font'
 
 import productsReducer from './store/reducers/productsReducer'
+import cartReducer from './store/reducers/cartReducers'
 import ShopNavigator from './navigation/ShopNavigator'
 
 const rootReducer = combineReducers({
   products: productsReducer,
+  cart: cartReducer,
 })
 
 const store = createStore(rootReducer)
