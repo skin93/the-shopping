@@ -1,14 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { FlatList } from 'react-native'
 
 const ProductsOverviewScreen = () => {
-  return (
-    <View>
-      <Text>Product Overview Screen</Text>
-    </View>
-  )
+  return <FlatList />
 }
 
 export default ProductsOverviewScreen
-
-const styles = StyleSheet.create({})
