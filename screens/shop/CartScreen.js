@@ -7,10 +7,11 @@ import CartItem from '../../components/shop/CartItem'
 import Colors from '../../constants/Colors'
 
 import * as cartActions from '../../store/actions/cartActions'
+import * as orderActions from '../../store/actions/orderActions'
 
-const CartScreen = (props) => {
+const CartScreen = () => {
   const dispatch = useDispatch()
-  const cartTotal = useSelector((state) => state.cart.totalAmount)
+  const cartTotalAmount = useSelector((state) => state.cart.totalAmount)
   const cartItems = useSelector((state) => {
     const transformedCartItems = []
     for (const key in state.cart.items) {
@@ -31,12 +32,16 @@ const CartScreen = (props) => {
     <View style={styles.screen}>
       <View style={styles.summary}>
         <Text style={styles.summaryText}>
-          Total: <Text style={styles.amount}>${cartTotal.toFixed(2)}</Text>
+          Total:{' '}
+          <Text style={styles.amount}>${cartTotalAmount.toFixed(2)}</Text>
         </Text>
         <Button
           color={Colors.accent}
           title='Order Now'
           disabled={cartItems.length === 0}
+          onPress={() => {
+            dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
+          }}
         />
       </View>
       <FlatList
