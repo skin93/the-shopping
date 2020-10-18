@@ -12,7 +12,7 @@ const CartItem = ({ title, quantity, amount, onRemove, deletable }) => {
   return (
     <View style={styles.cartItem}>
       <Text style={styles.itemData}>
-        <Text style={styles.quantity}>{quantity}</Text>
+        <Text style={styles.quantity}>{quantity}</Text>{' '}
         <Text style={styles.mainText}>{title}</Text>
       </Text>
       <View style={styles.itemData}>
