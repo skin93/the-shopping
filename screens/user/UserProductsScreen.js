@@ -32,7 +32,13 @@ const UserProductsScreen = ({ navigation }) => {
             editProductHandler(itemData.item.id)
           }}
         >
-          <Button color={Colors.primary} title='Edit' onPress={() => {}} />
+          <Button
+            color={Colors.primary}
+            title='Edit'
+            onPress={() => {
+              editProductHandler(itemData.item.id)
+            }}
+          />
           <Button
             color={Colors.primary}
             title='Delete'
