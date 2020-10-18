@@ -11,7 +11,7 @@ export default (state = initialState, action) => {
       const newOrder = new Order(
         new Date().toString(),
         action.payload.items,
-        action.payload.amount.toFixed(2),
+        action.payload.amount,
         new Date()
       )
       return {
