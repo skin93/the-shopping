@@ -14,18 +14,19 @@ const OrderItem = ({ amount, date, items }) => {
       </View>
       <Button
         color={Colors.primary}
-        title='Show Details'
+        title={showDetails ? 'Hide Details' : 'Show Details'}
         onPress={() => {
           setShowDetails((prevState) => !prevState)
         }}
       />
       {showDetails && (
-        <View>
+        <View style={styles.detailItems}>
           {items.map((item) => (
             <CartItem
+              key={item.productId}
               quantity={item.quantity}
-              amount={item.amount}
-              title={item.title}
+              amount={item.sum}
+              title={item.productTitle}
             />
           ))}
         </View>
@@ -64,5 +65,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'open-sans',
     color: '#888',
+  },
+  detailItems: {
+    width: '100%',
   },
 })
