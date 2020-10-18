@@ -4,15 +4,12 @@ import {
   Text,
   View,
   Image,
-  Button,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
 } from 'react-native'
 
-import Colors from '../../constants/Colors'
-
-const ProductItem = ({ title, price, imageUrl, onViewDetail, onAddToCart }) => {
+const ProductItem = ({ title, price, imageUrl, children, onSelect }) => {
   let TouchableCmp = TouchableOpacity
 
   if (Platform.OS === 'android' && Platform.Version >= 21) {
@@ -21,7 +18,7 @@ const ProductItem = ({ title, price, imageUrl, onViewDetail, onAddToCart }) => {
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableCmp onPress={onViewDetail} useForeground>
+        <TouchableCmp onPress={onSelect} useForeground>
           <View>
             <View style={styles.imageContainer}>
               <Image style={styles.image} source={{ uri: imageUrl }} />
@@ -30,18 +27,7 @@ const ProductItem = ({ title, price, imageUrl, onViewDetail, onAddToCart }) => {
               <Text style={styles.title}>{title}</Text>
               <Text style={styles.price}>${price.toFixed(2)}</Text>
             </View>
-            <View style={styles.buttons}>
-              <Button
-                color={Colors.primary}
-                title='View Details'
-                onPress={onViewDetail}
-              />
-              <Button
-                color={Colors.primary}
-                title='To Cart'
-                onPress={onAddToCart}
-              />
-            </View>
+            <View style={styles.buttons}>{children}</View>
           </View>
         </TouchableCmp>
       </View>
