@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useReducer } from 'react'
 import {
   StyleSheet,
   ScrollView,
@@ -14,24 +14,35 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import * as productActions from '../../store/actions/productActions'
 
+const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE'
+
+const formReducer = (state, action) => {
+  if (action.type === FORM_INPUT_UPDATE) {
+  }
+}
+
 const EditProductScreen = ({ navigation }) => {
   const dispatch = useDispatch()
+
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      title: editedProduct ? editedProduct.title : '',
+      imageUrl: editedProduct ? editedProduct.imageUrl : '',
+      description: editedProduct ? editedProduct.description : '',
+      price: '',
+    },
+    inputValidities: {
+      title: editedProduct ? true : false,
+      imageUrl: editedProduct ? true : false,
+      description: editedProduct ? true : false,
+      price: editedProduct ? true : false,
+    },
+    formIsValid: editedProduct ? true : false,
+  })
+
   const prodId = navigation.getParam('productId')
   const editedProduct = useSelector((state) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
-  )
-
-  const [title, setTitle] = useState(editedProduct ? editedProduct.title : '')
-  const [titleIsValid, setTitleIsValid] = useState(false)
-
-  const [imageUrl, setImageUrl] = useState(
-    editedProduct ? editedProduct.imageUrl : ''
-  )
-
-  const [price, setPrice] = useState('')
-
-  const [description, setDescription] = useState(
-    editedProduct ? editedProduct.description : ''
   )
 
   const submitHandler = useCallback(() => {
@@ -51,19 +62,23 @@ const EditProductScreen = ({ navigation }) => {
       )
     }
     navigation.goBack()
-  }, [dispatch, prodId, title, description, imageUrl, price])
+  }, [dispatch, prodId, title, description, imageUrl, price, titleIsValid])
 
   useEffect(() => {
     navigation.setParams({ submit: submitHandler })
   }, [submitHandler])
 
   const titleChangeHandler = (text) => {
-    if (text.trim().length === 0) {
-      setTitleIsValid(false)
-    } else {
-      setTitleIsValid(true)
+    let isValid = false
+    if (text.trim().length > 0) {
+      isValid = true
     }
-    setTitle(text)
+    dispatchFormState({
+      type: FORM_INPUT_UPDATE,
+      value: text,
+      isValid: isValid,
+      input: 'title',
+    })
   }
 
   return (
@@ -114,43 +129,4 @@ const EditProductScreen = ({ navigation }) => {
   )
 }
 
-EditProductScreen.navigationOptions = (navData) => {
-  const submitFn = navData.navigation.getParam('submit')
-  return {
-    headerTitle: navData.navigation.getParam('productId')
-      ? 'Edit Product'
-      : 'Add Product',
-    headerRight: () => (
-      <HeaderButtons HeaderButtonComponent={BaseHeaderButton}>
-        <Item
-          title='Save'
-          iconName={
-            Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
-          }
-          onPress={submitFn}
-        />
-      </HeaderButtons>
-    ),
-  }
-}
-
 export default EditProductScreen
-
-const styles = StyleSheet.create({
-  form: {
-    margin: 20,
-  },
-  formControl: {
-    width: '100%',
-  },
-  label: {
-    fontFamily: 'open-sans-bold',
-    marginVertical: 8,
-  },
-  input: {
-    paddingHorizontal: 2,
-    paddingVertical: 5,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-  },
-})
