@@ -3,9 +3,10 @@ import Order from '../../models/order'
 export const ADD_ORDER = 'ADD_ORDER'
 export const SET_ORDERS = 'SET_ORDERS'
 
-export const fetchOrders = () => async (dispatch) => {
+export const fetchOrders = () => async (dispatch, getState) => {
+  const userId = getState().auth.userId
   const res = await fetch(
-    'https://the-shopping-6e1ce.firebaseio.com/orders/u1.json'
+    `https://the-shopping-6e1ce.firebaseio.com/orders/${userId}.json`
   )
 
   if (!res.ok) {
@@ -37,9 +38,10 @@ export const addOrder = (cartItems, totalAmount) => async (
   getState
 ) => {
   const token = getState().auth.token
+  const userId = getState().auth.userId
   const date = new Date()
   const res = await fetch(
-    `https://the-shopping-6e1ce.firebaseio.com/orders/u1.json?auth=${token}`,
+    `https://the-shopping-6e1ce.firebaseio.com/orders/${userId}.json?auth=${token}`,
     {
       method: 'POST',
       headers: {

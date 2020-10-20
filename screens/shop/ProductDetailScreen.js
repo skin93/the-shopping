@@ -21,7 +21,7 @@ const ProductDetailScreen = ({ navigation }) => {
           color={Colors.primary}
           title='Add to Cart'
           onPress={() => {
-            dispatch(cartAction.addToCart(selectedProduct))
+            dispatch(cartActions.addToCart(selectedProduct))
           }}
         />
       </View>

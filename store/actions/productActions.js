@@ -5,39 +5,39 @@ export const CREATE_PRODUCT = 'CREATE_PRODUCT'
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT'
 export const SET_PRODUCTS = 'SET_PRODUCTS'
 
-export const fetchProducts = () => async (dispatch) => {
-  try {
-    const res = await fetch(
-      'https://the-shopping-6e1ce.firebaseio.com/products.json'
-    )
+export const fetchProducts = () => async (dispatch, getState) => {
+  const userId = getState().auth.userId
+  const res = await fetch(
+    'https://the-shopping-6e1ce.firebaseio.com/products.json'
+  )
 
-    if (!res.ok) {
-      throw new Error('Something went wrong!')
-    }
-
-    const data = await res.json()
-    const loadedProducts = []
-
-    for (const key in data) {
-      loadedProducts.push(
-        new Product(
-          key,
-          'u1',
-          data[key].title,
-          data[key].imageUrl,
-          data[key].description,
-          data[key].price
-        )
-      )
-    }
-
-    dispatch({
-      type: SET_PRODUCTS,
-      payload: loadedProducts,
-    })
-  } catch (error) {
-    throw error
+  if (!res.ok) {
+    throw new Error('Something went wrong!')
   }
+
+  const data = await res.json()
+  const loadedProducts = []
+
+  for (const key in data) {
+    loadedProducts.push(
+      new Product(
+        key,
+        'u1',
+        data[key].title,
+        data[key].imageUrl,
+        data[key].description,
+        data[key].price
+      )
+    )
+  }
+
+  dispatch({
+    type: SET_PRODUCTS,
+    payload: {
+      loadedProducts,
+      userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+    },
+  })
 }
 
 export const createProduct = (title, description, imageUrl, price) => async (
@@ -45,6 +45,7 @@ export const createProduct = (title, description, imageUrl, price) => async (
   getState
 ) => {
   const token = getState().auth.token
+  const userId = getState().auth.userId
   const res = await fetch(
     `https://the-shopping-6e1ce.firebaseio.com/products.json?auth=${token}`,
     {
@@ -57,6 +58,7 @@ export const createProduct = (title, description, imageUrl, price) => async (
         description,
         imageUrl,
         price,
+        ownerId: userId,
       }),
     }
   )
@@ -72,6 +74,7 @@ export const createProduct = (title, description, imageUrl, price) => async (
       description,
       imageUrl,
       price,
+      ownerId: userId,
     },
   })
 }
