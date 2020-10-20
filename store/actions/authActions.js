@@ -1,5 +1,12 @@
+import AsyncStorage from '@react-native-community/async-storage'
+
 export const SIGNUP = 'SIGNUP'
 export const LOGIN = 'LOGIN'
+export const AUTHENTICATE = 'AUTHENTICATE'
+
+export const authenticate = (userId, token) => {
+  return { type: AUTHENTICATE, payload: { userId, token } }
+}
 
 export const signup = (email, password) => async (dispatch) => {
   const res = await fetch(
@@ -31,10 +38,11 @@ export const signup = (email, password) => async (dispatch) => {
   const data = await res.json()
   console.log(data)
 
-  dispatch({
-    type: SIGNUP,
-    payload: { token: data.idToken, userId: data.localId },
-  })
+  dispatch(authenticate(data.localId, data.idToken))
+  const expirationDate = new Date(
+    new Date().getTime() + parseInt(data.expiresIn) * 1000
+  ).toISOString()
+  saveDataToStorage(data.idToken, data.localId, expirationDate)
 }
 
 export const login = (email, password) => async (dispatch) => {
@@ -68,10 +76,22 @@ export const login = (email, password) => async (dispatch) => {
   }
 
   const data = await res.json()
-  console.log(data)
 
-  dispatch({
-    type: LOGIN,
-    payload: { token: data.idToken, userId: data.localId },
-  })
+  dispatch(authenticate(data.localId, data.idToken))
+  const expirationDate = new Date(
+    new Date().getTime() + parseInt(data.expiresIn) * 1000
+  )
+  console.log(expirationDate)
+  saveDataToStorage(data.idToken, data.localId, expirationDate)
+}
+
+const saveDataToStorage = (token, userId, expirationDate) => {
+  AsyncStorage.setItem(
+    'userData',
+    JSON.stringify({
+      token,
+      userId,
+      expiryDate: expirationDate,
+    })
+  )
 }
