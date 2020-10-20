@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   FlatList,
   Platform,
   StyleSheet,
   Text,
+  View,
 } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import { useSelector, useDispatch } from 'react-redux'
@@ -14,21 +15,19 @@ import BaseHeaderButton from '../../components/UI/BaseHeaderButton'
 import OrderItem from '../../components/shop/OrderItem'
 
 import * as orderActions from '../../store/actions/orderActions'
+import Colors from '../../constants/Colors'
 
 const OrdersScreen = () => {
   const [isLoading, setIsLoading] = useState(false)
   const orders = useSelector((state) => state.order.orders)
   const dispatch = useDispatch()
 
-  const loadOrders = useCallback(async () => {
-    setIsLoading(true)
-    dispatch(orderActions.fetchOrders())
-    setIsLoading(false)
-  }, [dispatch, setIsLoading])
-
   useEffect(() => {
-    loadOrders()
-  }, [loadOrders])
+    setIsLoading(true)
+    dispatch(orderActions.fetchOrders()).then(() => {
+      setIsLoading(false)
+    })
+  }, [dispatch])
 
   if (isLoading) {
     return (
