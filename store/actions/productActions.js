@@ -78,7 +78,7 @@ export const updateProduct = (id, title, description, imageUrl) => async (
   dispatch
 ) => {
   try {
-    await fetch(
+    const res = await fetch(
       `https://the-shopping-6e1ce.firebaseio.com/products/${id}.json`,
       {
         method: 'PATCH',
@@ -92,6 +92,10 @@ export const updateProduct = (id, title, description, imageUrl) => async (
         }),
       }
     )
+
+    if (!res.ok) {
+      throw new Error('Something went wrong')
+    }
 
     dispatch({
       type: UPDATE_PRODUCT,
@@ -109,12 +113,17 @@ export const updateProduct = (id, title, description, imageUrl) => async (
 
 export const deleteProduct = (productId) => async (dispatch) => {
   try {
-    await fetch(
+    const res = await fetch(
       `https://the-shopping-6e1ce.firebaseio.com/products/${productId}.json`,
       {
         method: 'DELETE',
       }
     )
+
+    if (!res.ok) {
+      throw new Error('Something went wrong')
+    }
+
     dispatch({ type: DELETE_PRODUCT, payload: productId })
   } catch (error) {
     throw error
