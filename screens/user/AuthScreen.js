@@ -45,7 +45,7 @@ const formReducer = (state, action) => {
   return state
 }
 
-const AuthScreen = () => {
+const AuthScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState()
   const [isSignup, setIsSignup] = useState(false)
@@ -98,10 +98,11 @@ const AuthScreen = () => {
     setIsLoading(true)
     try {
       await dispatch(action)
+      navigation.navigate('Shop')
     } catch (error) {
       setError(error.message)
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (
