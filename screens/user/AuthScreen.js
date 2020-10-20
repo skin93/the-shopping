@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from 'react'
+import React, { useState, useReducer, useCallback } from 'react'
 import {
   StyleSheet,
   Text,
@@ -44,6 +44,7 @@ const formReducer = (state, action) => {
 }
 
 const AuthScreen = () => {
+  const [isSignup, setIsSignup] = useState(false)
   const dispatch = useDispatch()
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -70,13 +71,20 @@ const AuthScreen = () => {
     [dispatchFormState]
   )
 
-  const signupHandler = () => {
-    dispatch(
-      authActions.signup(
+  const authHandler = () => {
+    let action
+    if (isSignup) {
+      action = authActions.signup(
         formState.inputValues.email,
         formState.inputValues.password
       )
-    )
+    } else {
+      action = authActions.login(
+        formState.inputValues.email,
+        formState.inputValues.password
+      )
+    }
+    dispatch(action)
   }
 
   return (
@@ -113,16 +121,18 @@ const AuthScreen = () => {
             />
             <View style={styles.buttonContainer}>
               <Button
-                title='Login'
+                title={isSignup ? 'Sign Up' : 'Login'}
                 color={Colors.primary}
-                onPress={signupHandler}
+                onPress={authHandler}
               />
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                title='Switch to Sign Up'
+                title={`Switch to ${isSignup ? 'Login' : 'Sign Up'}`}
                 color={Colors.accent}
-                onPress={() => {}}
+                onPress={() => {
+                  setIsSignup((prevState) => !prevState)
+                }}
               />
             </View>
           </ScrollView>
