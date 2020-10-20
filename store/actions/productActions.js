@@ -41,10 +41,12 @@ export const fetchProducts = () => async (dispatch) => {
 }
 
 export const createProduct = (title, description, imageUrl, price) => async (
-  dispatch
+  dispatch,
+  getState
 ) => {
+  const token = getState().auth.token
   const res = await fetch(
-    'https://the-shopping-6e1ce.firebaseio.com/products.json',
+    `https://the-shopping-6e1ce.firebaseio.com/products.json?auth=${token}`,
     {
       method: 'POST',
       headers: {
@@ -75,46 +77,45 @@ export const createProduct = (title, description, imageUrl, price) => async (
 }
 
 export const updateProduct = (id, title, description, imageUrl) => async (
-  dispatch
+  dispatch,
+  getState
 ) => {
-  try {
-    const res = await fetch(
-      `https://the-shopping-6e1ce.firebaseio.com/products/${id}.json`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          imageUrl,
-        }),
-      }
-    )
-
-    if (!res.ok) {
-      throw new Error('Something went wrong')
-    }
-
-    dispatch({
-      type: UPDATE_PRODUCT,
-      payload: {
-        id,
+  const token = getState().auth.token
+  const res = await fetch(
+    `https://the-shopping-6e1ce.firebaseio.com/products/${id}.json?auth=${token}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         title,
         description,
         imageUrl,
-      },
-    })
-  } catch (error) {
-    throw error
+      }),
+    }
+  )
+
+  if (!res.ok) {
+    throw new Error('Something went wrong')
   }
+
+  dispatch({
+    type: UPDATE_PRODUCT,
+    payload: {
+      id,
+      title,
+      description,
+      imageUrl,
+    },
+  })
 }
 
-export const deleteProduct = (productId) => async (dispatch) => {
+export const deleteProduct = (productId) => async (dispatch, getState) => {
   try {
+    const token = getState().auth.token
     const res = await fetch(
-      `https://the-shopping-6e1ce.firebaseio.com/products/${productId}.json`,
+      `https://the-shopping-6e1ce.firebaseio.com/products/${productId}.json?auth=${token}`,
       {
         method: 'DELETE',
       }

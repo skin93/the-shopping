@@ -31,7 +31,10 @@ export const signup = (email, password) => async (dispatch) => {
   const data = await res.json()
   console.log(data)
 
-  dispatch({ type: SIGNUP })
+  dispatch({
+    type: SIGNUP,
+    payload: { token: data.idToken, userId: data.localId },
+  })
 }
 
 export const login = (email, password) => async (dispatch) => {
@@ -67,5 +70,8 @@ export const login = (email, password) => async (dispatch) => {
   const data = await res.json()
   console.log(data)
 
-  dispatch({ type: LOGIN })
+  dispatch({
+    type: LOGIN,
+    payload: { token: data.idToken, userId: data.localId },
+  })
 }
