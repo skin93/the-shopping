@@ -10,30 +10,38 @@ export const deleteProduct = (productId) => {
 }
 
 export const fetchProducts = () => async (dispatch) => {
-  const res = await fetch(
-    'https://the-shopping-6e1ce.firebaseio.com/products.json'
-  )
-
-  const data = await res.json()
-  const loadedProducts = []
-
-  for (const key in data) {
-    loadedProducts.push(
-      new Product(
-        key,
-        'u1',
-        data[key].title,
-        data[key].imageUrl,
-        data[key].description,
-        data[key].price
-      )
+  try {
+    const res = await fetch(
+      'https://the-shopping-6e1ce.firebaseio.com/products.json'
     )
-  }
 
-  dispatch({
-    type: SET_PRODUCTS,
-    payload: loadedProducts,
-  })
+    if (!res.ok) {
+      throw new Error('Something went wrong!')
+    }
+
+    const data = await res.json()
+    const loadedProducts = []
+
+    for (const key in data) {
+      loadedProducts.push(
+        new Product(
+          key,
+          'u1',
+          data[key].title,
+          data[key].imageUrl,
+          data[key].description,
+          data[key].price
+        )
+      )
+    }
+
+    dispatch({
+      type: SET_PRODUCTS,
+      payload: loadedProducts,
+    })
+  } catch (error) {
+    throw error
+  }
 }
 
 export const createProduct = (title, description, imageUrl, price) => async (
