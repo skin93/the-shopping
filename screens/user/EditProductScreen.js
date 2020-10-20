@@ -2,11 +2,10 @@ import React, { useEffect, useCallback, useReducer } from 'react'
 import {
   StyleSheet,
   ScrollView,
-  Text,
-  TextInput,
   View,
   Platform,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import BaseHeaderButton from '../../components/UI/BaseHeaderButton'
@@ -110,61 +109,67 @@ const EditProductScreen = ({ navigation }) => {
   )
 
   return (
-    <ScrollView>
-      <View style={styles.form}>
-        <BaseInput
-          id='title'
-          label='Title'
-          errorText='Please enter a valid title'
-          keyboardType='default'
-          autoCapitalize='sentences'
-          autoCorrect
-          returnKeyType='next'
-          onInputChange={inputChangeHandler}
-          initialValue={editedProduct ? editedProduct.title : ''}
-          initiallyValid={!!editedProduct}
-          required
-        />
-        <BaseInput
-          id='imageUrl'
-          label='Image Url'
-          errorText='Please enter a valid image url'
-          keyboardType='default'
-          returnKeyType='next'
-          onInputChange={inputChangeHandler}
-          initialValue={editedProduct ? editedProduct.imageUrl : ''}
-          initiallyValid={!!editedProduct}
-          required
-        />
-        {editedProduct ? null : (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior='padding'
+      keyboardVerticalOffset={100}
+    >
+      <ScrollView>
+        <View style={styles.form}>
           <BaseInput
-            id='price'
-            label='Price'
-            errorText='Please enter a valid price'
-            keyboardType='decimal-pad'
+            id='title'
+            label='Title'
+            errorText='Please enter a valid title'
+            keyboardType='default'
+            autoCapitalize='sentences'
+            autoCorrect
             returnKeyType='next'
             onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.title : ''}
+            initiallyValid={!!editedProduct}
             required
-            min={0.1}
           />
-        )}
-        <BaseInput
-          id='description'
-          label='Description'
-          errorText='Please enter a valid description'
-          keyboardType='default'
-          autoCapitalize='sentences'
-          autoCorrect
-          multiline
-          onInputChange={inputChangeHandler}
-          numberOfLines={3}
-          initialValue={editedProduct ? editedProduct.description : ''}
-          initiallyValid={!!editedProduct}
-          required
-          minLength={5}
-        />
-      </View>
-    </ScrollView>
+          <BaseInput
+            id='imageUrl'
+            label='Image Url'
+            errorText='Please enter a valid image url'
+            keyboardType='default'
+            returnKeyType='next'
+            onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.imageUrl : ''}
+            initiallyValid={!!editedProduct}
+            required
+          />
+          {editedProduct ? null : (
+            <BaseInput
+              id='price'
+              label='Price'
+              errorText='Please enter a valid price'
+              keyboardType='decimal-pad'
+              returnKeyType='next'
+              onInputChange={inputChangeHandler}
+              required
+              min={0.1}
+            />
+          )}
+          <BaseInput
+            id='description'
+            label='Description'
+            errorText='Please enter a valid description'
+            keyboardType='default'
+            autoCapitalize='sentences'
+            autoCorrect
+            multiline
+            onInputChange={inputChangeHandler}
+            numberOfLines={3}
+            initialValue={editedProduct ? editedProduct.description : ''}
+            initiallyValid={!!editedProduct}
+            required
+            minLength={5}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
