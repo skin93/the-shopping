@@ -1,4 +1,40 @@
+import Order from '../../models/order'
+
 export const ADD_ORDER = 'ADD_ORDER'
+export const SET_ORDERS = 'SET_ORDERS'
+
+export const fetchOrders = () => async (dispatch) => {
+  try {
+    const res = await fetch(
+      'https://the-shopping-6e1ce.firebaseio.com/orders/u1.json'
+    )
+
+    if (!res.ok) {
+      throw new Error('Something went wrong!')
+    }
+
+    const data = await res.json()
+    const loadedOrders = []
+
+    for (const key in data) {
+      loadedOrders.push(
+        new Order(
+          key,
+          data[key].cartItems,
+          data[key].totalAmount,
+          new Date(data[key].date)
+        )
+      )
+    }
+
+    dispatch({
+      type: SET_ORDERS,
+      payload: loadedOrders,
+    })
+  } catch (error) {
+    throw error
+  }
+}
 
 export const addOrder = (cartItems, totalAmount) => async (dispatch) => {
   try {
