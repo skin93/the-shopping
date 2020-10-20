@@ -5,10 +5,6 @@ export const CREATE_PRODUCT = 'CREATE_PRODUCT'
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT'
 export const SET_PRODUCTS = 'SET_PRODUCTS'
 
-export const deleteProduct = (productId) => {
-  return { type: DELETE_PRODUCT, payload: productId }
-}
-
 export const fetchProducts = () => async (dispatch) => {
   try {
     const res = await fetch(
@@ -78,14 +74,49 @@ export const createProduct = (title, description, imageUrl, price) => async (
   })
 }
 
-export const updateProduct = (id, title, description, imageUrl) => {
-  return {
-    type: UPDATE_PRODUCT,
-    payload: {
-      id,
-      title,
-      description,
-      imageUrl,
-    },
+export const updateProduct = (id, title, description, imageUrl) => async (
+  dispatch
+) => {
+  try {
+    await fetch(
+      `https://the-shopping-6e1ce.firebaseio.com/products/${id}.json`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          imageUrl,
+        }),
+      }
+    )
+
+    dispatch({
+      type: UPDATE_PRODUCT,
+      payload: {
+        id,
+        title,
+        description,
+        imageUrl,
+      },
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+export const deleteProduct = (productId) => async (dispatch) => {
+  try {
+    await fetch(
+      `https://the-shopping-6e1ce.firebaseio.com/products/${productId}.json`,
+      {
+        method: 'DELETE',
+      }
+    )
+    dispatch({ type: DELETE_PRODUCT, payload: productId })
+  } catch (error) {
+    throw error
   }
 }
