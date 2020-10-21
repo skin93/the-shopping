@@ -65,7 +65,6 @@ export const createProduct = (title, description, imageUrl, price) => async (
 
   const data = await res.json()
 
-  console.log(data)
   dispatch({
     type: CREATE_PRODUCT,
     payload: {
